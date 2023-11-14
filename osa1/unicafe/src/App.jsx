@@ -1,7 +1,14 @@
 import { useState } from 'react'
 
 const StatisticLine = (props) => (
-  <p>{props.text} {props.value}</p>
+  <table>
+    <tbody>
+      <tr>
+      <td>{props.text}</td>
+      <td>{props.value}</td>
+      </tr>
+    </tbody>
+  </table>
 )
 
 const Statistics = (props) => {
@@ -18,8 +25,8 @@ const Statistics = (props) => {
       <StatisticLine text='neutral' value={props.neutral} />
       <StatisticLine text='bad' value={props.bad} />
       <StatisticLine text='all' value={props.total} />
-      <StatisticLine text='average' value={props.average} />
-      <StatisticLine text='positive' value={props.positive + ' %'} />
+      <StatisticLine text='average' value={props.average.toFixed(1)} />
+      <StatisticLine text='positive' value={props.positive.toFixed(1) + ' %'} />
     </div>
   )
 }
