@@ -43,17 +43,24 @@ const App = () => {
     const nameExists = persons.findIndex(person => person.name === newName)
 
     if (nameExists !== -1 ){
-      alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        const foundPerson = persons[nameExists]
+        personService
+          .update(foundPerson.id, nameObject)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== foundPerson.id ? person : returnedPerson))
+          })
+      }
     }
     else {
       personService
         .create(nameObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
-          setNewName('')
-          setNewNumber('')
         })
     }
+    setNewName('')
+    setNewNumber('')
   }
 
   const deleteName = (id, name) => {
