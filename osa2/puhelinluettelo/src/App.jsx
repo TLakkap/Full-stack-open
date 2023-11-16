@@ -2,34 +2,27 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import axios from 'axios'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchParam, setSearchParam] = useState('')
+  const [showAll, setShowAll] = useState(true)
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
-  const search = (param) => {
-    if(param === ''){
-      setPersons(persons);
-    }else{
-      let foundPersons = persons.filter(el => el.name.toLowerCase().indexOf(param.toLowerCase()) !== -1)
-      setPersons(foundPersons);
-    }
-  }
+  const personsToShow = searchParam === "" ? persons : persons.filter(el => el.name.toLowerCase().indexOf(searchParam.toLowerCase()) !== -1)
 
   const handleSearchChange = (event) => {
     setSearchParam(event.target.value)
-    search(event.target.value)
   }
   
   const handleNameChange = (event) => {
@@ -53,12 +46,23 @@ const App = () => {
       alert(`${newName} is already added to phonebook`)
     }
     else {
-      setPersons(persons.concat(nameObject))
-      setNewName('')
-      setNewNumber('')
-      setSearchParam('')
-      search('')
+      personService
+        .create(nameObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
     }
+  }
+
+  const deleteName = id => {
+    personService
+      .remove(id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      }
+      )
   }
 
   return (
@@ -68,7 +72,7 @@ const App = () => {
       <h2>Add a new</h2>
       <PersonForm addName={addName} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons persons={persons} />
+      <Persons personsToShow={personsToShow} deleteName={deleteName} />
     </div>
   )
 }
