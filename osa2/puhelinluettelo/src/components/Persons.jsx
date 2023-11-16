@@ -4,7 +4,7 @@ const Persons = (props) => {
             {props.personsToShow.map(person =>
                 <div key={person.name}>
                     {person.name} {person.number}
-                    <button onClick={() => props.deleteName(person.id)}>delete</button>
+                    <button onClick={() => props.deleteName(person.id, person.name)}>delete</button>
                 </div>
                 )}
         </div>
