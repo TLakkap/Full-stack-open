@@ -21,8 +21,8 @@ const mostBlogs = (blogs) => {
     const groupedByAuthor = _.groupBy(blogs, 'author')
     
     const authorWithMostBlogs = _.maxBy(Object.keys(groupedByAuthor), author => {
-        return groupedByAuthor[author].length;
-    });
+        return groupedByAuthor[author].length
+    })
       
     const mostBlogsCount = groupedByAuthor[authorWithMostBlogs].length
       
@@ -31,10 +31,26 @@ const mostBlogs = (blogs) => {
     blogs: mostBlogsCount,
     }
 }
+
+const mostLikes = (blogs) => {
+    const groupedByAuthor = _.groupBy(blogs, 'author')
+    
+    const authorWithMostLikes = _.maxBy(Object.keys(groupedByAuthor), author => {
+        return _.sumBy(groupedByAuthor[author], 'likes')
+    })
+      
+    const mostLikesCount = _.sumBy(groupedByAuthor[authorWithMostLikes], 'likes')
+      
+    return {
+    author: authorWithMostLikes,
+    likes: mostLikesCount
+    }
+}
   
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
