@@ -25,7 +25,7 @@ beforeEach(async () => {
     await blogObject.save()
     blogObject = new Blog(initialBlogs[1])
     await blogObject.save()
-})
+}, 15000)
 
 test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
@@ -82,7 +82,7 @@ test('a blog without title can not be added', async () => {
     await api
         .post('/api/blogs')
         .send(newBlog)
-        .expect(500)
+        .expect(400)
 })
 
 test('a blog without url can not be added', async () => {
@@ -95,7 +95,7 @@ test('a blog without url can not be added', async () => {
     await api
         .post('/api/blogs')
         .send(newBlog)
-        .expect(500)
+        .expect(400)
 })
 
 afterAll(async () => {
