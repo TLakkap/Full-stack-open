@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/655bb22efb7d1982e71c6a5d
+Content-Type: application/json
+
+{
+    "title": "Blogi",
+    "author": "Iines Ankka",
+    "url": "http://osoite.fi",
+    "likes": 2
+}
