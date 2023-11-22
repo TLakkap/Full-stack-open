@@ -1,10 +1,11 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrdWFua2thMiIsImlkIjoiNjU1ZGI2N2MwNjEyYTdmZDYxZTU0MjU5IiwiaWF0IjoxNzAwNjUzNDY4fQ.1C561SILeUnFSaIacYsJiArqn73OB1cm0rSWZs0WEL8
 
 {
-    "title": "Some blog",
-    "author": "Roope Ankka",
+    "title": "Joku blog",
+    "author": "Hessu Hopo",
     "url": "http://osoiteontama.fi",
-    "likes": 2,
-    "userId": "655da96a9ae6e5a847deabdc"
+    "likes": 0,
+    "userId": "655db67c0612a7fd61e54259"
 }

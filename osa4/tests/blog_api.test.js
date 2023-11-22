@@ -14,6 +14,12 @@ beforeEach(async () => {
     await blogObject.save()
     blogObject = new Blog(helper.initialBlogs[1])
     await blogObject.save()
+    await User.deleteMany({})
+  
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
+
+    await user.save()
 }, 15000)
 
 test('all blogs are returned', async () => {
@@ -27,6 +33,9 @@ test('_id is transformed to id', async () => {
 })
 
 test('a valid blog can be added', async () => {
+    const login = await api.post('/api/login').send({username: 'root', password: 'sekret'})
+    const token = login.token
+    
     const newBlog = {
         title: "Canonical string reduction",
         author: "Edsger W. Dijkstra",
@@ -36,6 +45,7 @@ test('a valid blog can be added', async () => {
 
     await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -157,7 +167,7 @@ describe('when there is initially one user at db', () => {
       const usernames = usersAtEnd.map(u => u.username)
       expect(usernames).toContain(newUser.username)
     })
-    
+
     test('creation fails with proper statuscode and message if username already taken', async () => {
         const usersAtStart = await helper.usersInDb()
     
@@ -178,7 +188,87 @@ describe('when there is initially one user at db', () => {
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd).toHaveLength(usersAtStart.length)
       })
-  })
+
+    test('creation fails with proper statuscode and message if password too short', async () => {
+        const usersAtStart = await helper.usersInDb()
+    
+        const newUser = {
+          username: 'new',
+          name: 'user',
+          password: 'sa',
+        }
+    
+        const result = await api
+          .post('/api/users')
+          .send(newUser)
+          .expect(400)
+          .expect('Content-Type', /application\/json/)
+    
+        expect(result.body.error).toContain('password too short')
+    
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+      })
+
+    test('creation fails with proper statuscode and message if username too short', async () => {
+        const usersAtStart = await helper.usersInDb()
+    
+        const newUser = {
+          username: 'ne',
+          name: 'user',
+          password: 'salainen',
+        }
+    
+        const result = await api
+          .post('/api/users')
+          .send(newUser)
+          .expect(400)
+          .expect('Content-Type', /application\/json/)
+    
+        expect(result.body.error).toContain('username too short')
+    
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+      })
+    test('creation fails with proper statuscode and message if username is missing', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = {
+            name: 'user',
+            password: 'salainen',
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        expect(result.body.error).toContain('username is missing')
+
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    })
+    test('creation fails with proper statuscode and message if password is missing', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = {
+            username: 'nimi',
+            name: 'user',
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        expect(result.body.error).toContain('password is missing')
+
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    })
+})
 
 afterAll(async () => {
     await mongoose.connection.close()
