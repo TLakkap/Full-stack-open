@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrdWFua2thMiIsImlkIjoiNjU1ZGI2N2MwNjEyYTdmZDYxZTU0MjU5IiwiaWF0IjoxNzAwNjc2MzI5fQ.LOckgbl-o20VOKovq8Mi06rF20uk9M7jyP05gQtYtOY
+Authorization: 
 
 {
     "title": "Joku blog",
