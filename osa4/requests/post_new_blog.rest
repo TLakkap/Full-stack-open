@@ -2,6 +2,9 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "author": "Iines Ankka",
-    "url": "http://osoite.fi"
+    "title": "Some blog",
+    "author": "Roope Ankka",
+    "url": "http://osoiteontama.fi",
+    "likes": 2,
+    "userId": "655da96a9ae6e5a847deabdc"
 }
