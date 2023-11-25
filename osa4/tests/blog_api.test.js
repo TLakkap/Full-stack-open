@@ -34,7 +34,7 @@ test('_id is transformed to id', async () => {
 
 test('a valid blog can be added', async () => {
     const login = await api.post('/api/login').send({username: 'root', password: 'sekret'})
-    const token = login.token
+    const token = login._body.token
     
     const newBlog = {
         title: "Canonical string reduction",
@@ -60,13 +60,16 @@ test('a valid blog can be added', async () => {
 })
 
 test(`adding a blog with likes undefined, likes are saved as 0`, async () => {
+    const login = await api.post('/api/login').send({username: 'root', password: 'sekret'})
+    const token = login._body.token
+
     const newBlog = {
         title: "Canonical string reduction",
         author: "Edsger W. Dijkstra",
         url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html"
     }
 
-    const response = await api.post('/api/blogs').send(newBlog)
+    const response = await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newBlog)
     expect(response.body.likes).toBe(0)
 })
 
@@ -97,12 +100,13 @@ test('a blog without url can not be added', async () => {
 })
 
 test('a blog can be deleted', async () => {
+    const login = await api.post('/api/login').send({username: 'root', password: 'sekret'})
+    const token = login._body.token
+
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
   
-    await api
-        .delete(`/api/blogs/${blogToDelete.id}`)
-        .expect(204)
+    await api.delete(`/api/blogs/${blogToDelete.id}`, {headers: {Authorization: `Bearer ${token}`}}).expect(204)
     
     const blogsAtEnd = await helper.blogsInDb()
   
