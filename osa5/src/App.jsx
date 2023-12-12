@@ -16,7 +16,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {    
@@ -78,7 +78,9 @@ const App = () => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
+        setBlogs(blogs.concat({
+          ...returnedBlog, 
+          user: user}))
       })
       setBlogFormVisible(false)
       setNotification(`A new blog ${blogObject.title} by ${blogObject.author} added`)
