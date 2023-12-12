@@ -103,6 +103,15 @@ const App = () => {
       })
   }
 
+  const deleteBlog = (id) => {
+    blogService
+      .remove(id)
+      .then(() => {
+        const updatedBlogs = blogs.filter(blog => blog.id !== id)
+        setBlogs(updatedBlogs)
+      })
+  }
+
   const sortedBlogs = blogs.slice().sort((a, b) => b.likes - a.likes)
 
   const loginForm = () => (
@@ -136,7 +145,7 @@ const App = () => {
     return(
       <div>
         <h2>blogs</h2>
-        {sortedBlogs.map(blog => <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />)}
+        {sortedBlogs.map(blog => <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} loggedUser={user} />)}
       </div>
   )}
 

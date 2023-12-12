@@ -1,7 +1,6 @@
 import { useState } from "react"
-import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog, loggedUser }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -29,6 +28,12 @@ const Blog = ({ blog, updateBlog }) => {
     updateBlog(id, blogObject)
   }
 
+  const handleDelete = (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      deleteBlog(blog.id)
+    }
+  }
+
   const hideWhenVisible = { display: blogDetailsVisible ? 'none' : '' }
   const showWhenVisible = { display: blogDetailsVisible ? '' : 'none' }
 
@@ -50,6 +55,7 @@ const Blog = ({ blog, updateBlog }) => {
         <div>
         {blog.user.name}
         </div>
+        {loggedUser.username === blog.user.username && <button onClick={() => handleDelete(blog)}>remove</button>}
       </div>
     </div>
   )
