@@ -10,9 +10,6 @@ const App = () => {
   const [username, setUsername] = useState('')   
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
   const [notification, setNotification] = useState(null)
   const [blogFormVisible, setBlogFormVisible] = useState(false)
 
@@ -69,13 +66,7 @@ const App = () => {
         </div>
         <div style={showWhenVisible}>
           <BlogForm 
-            addBlog={addBlog}
-            newTitle={newTitle}
-            setNewTitle={setNewTitle}
-            newAuthor={newAuthor}
-            setNewAuthor={setNewAuthor}
-            newUrl={newUrl}
-            setNewUrl={setNewUrl} 
+            createBlog={createBlog}
           />
          <button onClick={() => setBlogFormVisible(false)}>cancel</button>
         </div>
@@ -83,27 +74,17 @@ const App = () => {
     )
   }
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    setBlogFormVisible(false)
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    }
-
+  const createBlog = (blogObject) => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        setNotification(`A new blog ${newTitle} by ${newAuthor} added`)
-            setTimeout(() => {
-              setNotification(null)
-            }, 5000)
-        setNewTitle('')
-        setNewAuthor('')
-        setNewUrl('')
       })
+      setBlogFormVisible(false)
+      setNotification(`A new blog ${blogObject.title} by ${blogObject.author} added`)
+      setTimeout(() => {
+          setNotification(null)
+      }, 5000)
   }
 
   const loginForm = () => (
@@ -153,10 +134,7 @@ const App = () => {
         {blogForm()}
         {showBlogs()}
       </div>
-    } 
-
-
-      
+    }       
     </div>
   )
 }
