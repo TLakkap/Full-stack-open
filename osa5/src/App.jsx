@@ -7,7 +7,7 @@ import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')   
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
@@ -19,35 +19,35 @@ const App = () => {
     )
   }, [])
 
-  useEffect(() => {    
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')    
-    if (loggedUserJSON) {      
-      const user = JSON.parse(loggedUserJSON)      
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
-    }  
+    }
   }, [])
 
-  const handleLogin = async (event) => {    
-    event.preventDefault()    
-    try {    
-      const user = await loginService.login({        
-        username, password,      
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    try {
+      const user = await loginService.login({
+        username, password,
       })
-      window.localStorage.setItem(        
+      window.localStorage.setItem(
         'loggedNoteappUser',
-        JSON.stringify(user)      
+        JSON.stringify(user)
       )
       blogService.setToken(user.token)
-      setUser(user)      
-      setUsername('')      
-      setPassword('')    
-    } 
-    catch (exception) {      
-      setNotification('wrong username or password')      
-      setTimeout(() => {        
-        setNotification(null)      
-      }, 5000)    
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    }
+    catch (exception) {
+      setNotification('wrong username or password')
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     }
   }
 
@@ -65,10 +65,10 @@ const App = () => {
           <button onClick={() => setBlogFormVisible(true)}>create new blog</button>
         </div>
         <div style={showWhenVisible}>
-          <BlogForm 
+          <BlogForm
             createBlog={createBlog}
           />
-         <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+          <button onClick={() => setBlogFormVisible(false)}>cancel</button>
         </div>
       </div>
     )
@@ -79,14 +79,14 @@ const App = () => {
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat({
-          ...returnedBlog, 
-          user: user}))
+          ...returnedBlog,
+          user: user }))
       })
-      setBlogFormVisible(false)
-      setNotification(`A new blog ${blogObject.title} by ${blogObject.author} added`)
-      setTimeout(() => {
-          setNotification(null)
-      }, 5000)
+    setBlogFormVisible(false)
+    setNotification(`A new blog ${blogObject.title} by ${blogObject.author} added`)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
 
   const updateBlog = (id, blogObject) => {
@@ -116,28 +116,28 @@ const App = () => {
 
   const loginForm = () => (
     <>
-    <h2>Login</h2>
-    <form onSubmit={handleLogin}>
-      <div>
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
+        <div>
         username
           <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
         password
           <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit">login</button>
+      </form>
     </>
   )
 
@@ -147,19 +147,19 @@ const App = () => {
         <h2>blogs</h2>
         {sortedBlogs.map(blog => <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} loggedUser={user} />)}
       </div>
-  )}
+    )}
 
   return (
     <div>
       <Notification message={notification} />
-      {!user && loginForm()} 
+      {!user && loginForm()}
       {user && <div>
         <p>{user.name} logged in</p>
         <button onClick={logout}>Log out</button>
         {blogForm()}
         {showBlogs()}
       </div>
-    }       
+      }
     </div>
   )
 }
