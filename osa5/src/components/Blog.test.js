@@ -1,6 +1,7 @@
 import React from 'react'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 describe('<Blog />', () => {
@@ -29,7 +30,7 @@ describe('<Blog />', () => {
         deleteBlog={dummyDeleteBlog}
         loggedUser={dummyLoggedUser}
       />
-    )
+    ).container
   })
 
   test('renders title and author', () => {
@@ -38,5 +39,24 @@ describe('<Blog />', () => {
 
     expect(titleElement).toBeDefined()
     expect(authorElement).toBeDefined()
+  })
+
+  test('clicking the view button renders url, likes and user', async () => {
+    const user = userEvent.setup()
+    const button = screen.getByText('view')
+    await user.click(button)
+
+    const div = container.querySelector('.togglable')
+    expect(div).not.toHaveStyle('display: none')
+  })
+
+  test('clicking the like button twice updateLikes is called twice', async () => {
+    const user = userEvent.setup()
+    const likeButton = screen.getByText('like')
+
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(dummyUpdateBlog.mock.calls).toHaveLength(2)
   })
 })

@@ -45,7 +45,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedUser }) => {
         <button style={hideWhenVisible} onClick={() => toggleDetails()}>view</button>
         <button style={showWhenVisible} onClick={() => toggleDetails()}>hide</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className='togglable'>
         <div>
           {blog.url}
         </div>
