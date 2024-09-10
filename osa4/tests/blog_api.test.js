@@ -1,3 +1,5 @@
+const { test, after, beforeEach, describe } = require('node:test')
+const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const helper = require('./test_helper')
@@ -24,12 +26,12 @@ beforeEach(async () => {
 
 test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
-    expect(response.body).toHaveLength(helper.initialBlogs.length)
+    assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
 test('_id is transformed to id', async () => {
     const response = await api.get('/api/blogs')
-    expect(response.body[0].id).toBeDefined()
+    assert(response.body[0].id)
 })
 
 test('a valid blog can be added', async () => {
@@ -44,19 +46,19 @@ test('a valid blog can be added', async () => {
     }
 
     await api
-        .post('/api/blogs')
+    .post('/api/blogs')
         .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
-    
-    const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
-    const contents = blogsAtEnd.map(b => b.title)
-    expect(contents).toContain(
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+    const titles = blogsAtEnd.map(b => b.title)
+    assert(titles.includes(
         'Canonical string reduction'
-    )
+    ))
 })
 
 test(`adding a blog with likes undefined, likes are saved as 0`, async () => {
@@ -70,7 +72,7 @@ test(`adding a blog with likes undefined, likes are saved as 0`, async () => {
     }
 
     const response = await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newBlog)
-    expect(response.body.likes).toBe(0)
+    assert.strictEqual(response.body.likes, 0)
 })
 
 test('a blog without title can not be added', async () => {
@@ -273,7 +275,6 @@ describe('when there is initially one user at db', () => {
         expect(usersAtEnd).toHaveLength(usersAtStart.length)
     })
 })
-
-afterAll(async () => {
-    await mongoose.connection.close()
+after(async () => {
+  await mongoose.connection.close()
 })

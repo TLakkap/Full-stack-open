@@ -2,19 +2,19 @@ const _ = require('lodash');
 
 const dummy = (blogs) => {
     return 1
-}
+  }
 
 const totalLikes = (blogs) => {
-    let likes = 0
+    let sum = 0
     for (let i=0; i < blogs.length; i++) {
-        likes += blogs[i].likes
+        sum += blogs[i].likes
     }
-    return likes
+    return sum
 }
 
 const favoriteBlog = (blogs) => {
-    const maxLikes = blogs.reduce((prev, current) => (prev.likes > current.likes) ? prev : current);
-    return maxLikes
+    const blogWithMostLikes = blogs.reduce((prev, current) => (prev.likes > current.likes) ? prev : current);
+    return blogWithMostLikes
 }
 
 const mostBlogs = (blogs) => {
@@ -53,4 +53,4 @@ module.exports = {
     favoriteBlog,
     mostBlogs,
     mostLikes
-}
+  }
