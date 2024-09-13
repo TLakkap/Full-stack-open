@@ -53,10 +53,6 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedUser }) => {
           Likes {blog.likes}
           <button onClick={() => updateLikes(blog)}>like</button>
         </div>
-        <div>
-          {blog.user.name}
-        </div>
-        {loggedUser.username === blog.user.username && <button onClick={() => handleDelete(blog)}>remove</button>}
       </div>
     </div>
   )
